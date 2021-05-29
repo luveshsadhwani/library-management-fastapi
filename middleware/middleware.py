@@ -17,7 +17,7 @@ async def auth_check(request: Request, call_next):
 
             token = request.headers['authorization']
             obj = AuthDb
-            trust = await obj.check_token("sdikjansjafirdask")
+            trust = await obj.check_token(token)
             if not trust:
                 return JSONResponse({"message": "Unauthorized"}, status_code=403)
             else:
@@ -25,7 +25,11 @@ async def auth_check(request: Request, call_next):
                 return response
         except KeyError:
             return JSONResponse({"message": "Unauthorized"}, status_code=403)
-
 """
-HAB CON TO DB
+    Middleware works with every route once it has been connected to the main app in main.py
+    what this does is that it checks header of the http request
+    the line token=request.headers['authorization'] this fetches the auth token from the header
+    then the token is sent to the database for verification
+    if verified then the endpoints are open to anyone to use otherwise the api returns a 403 and restricts the access
+
 """
