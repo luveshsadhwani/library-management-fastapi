@@ -32,4 +32,5 @@ async def auth_check(request: Request, call_next):
     then the token is sent to the database for verification
     if verified then the endpoints are open to anyone to use otherwise the api returns a 403 and restricts the access
 
+    so by now you are probably know that middleware acts as a middleman for the authentication purposes :)
 """
