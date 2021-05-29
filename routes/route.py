@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from .db import AuthDb
-import json
+#from fastapi.responses import UJSONResponse
+
 
 router = APIRouter()
 
@@ -19,5 +20,15 @@ async def home():
 @router.get("/data")
 async def data():
     data = await AuthDb.return_data()
+    return [{"data": data}]
 
-    return {"data":{str(data)}}
+""" TEST FOR CHECKING TOKEN DONT WANT THE WHOLE WORLD TO ACCESS OUR API """
+@router.get("/test")
+async def test():
+    data = await AuthDb.check_token("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2siOiJvZXhvb2R4c2hzIn0.x8ZEh...")
+    print(data)
+    if data is None:
+        return data
+    else:
+        print(data)
+        return {True}
