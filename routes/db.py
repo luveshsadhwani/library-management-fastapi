@@ -1,9 +1,8 @@
 import motor.motor_asyncio
-import json
-from bson.json_util import dumps, loads
+
 
 client = motor.motor_asyncio.AsyncIOMotorClient(
-    f'MONGO URL')
+    f'Mongodb url goes here')
 
 db = client['apidb']
 token_collection = db['token']
@@ -23,7 +22,7 @@ class AuthDb:
     async def return_data():
         dat = []
         data_collection = db['data']
-        results = data_collection.find({},{'_id':0})
+        results = data_collection.find({}, {'_id': 0})
         for document in await results.to_list(length=100):
             dat.append(document)
         return dat
@@ -32,3 +31,14 @@ class AuthDb:
     async def check_token(token: str):
         result = await token_collection.find_one({"token": token})
         return result
+
+    @staticmethod
+    async def login_check(username, password):
+
+        login_collection = db['login']
+        result = await login_collection.find_one({"username": username, "password": password})
+        if result is None:
+            return False
+        else:
+            return True
+
