@@ -3,7 +3,7 @@ import json
 from bson.json_util import dumps, loads
 
 client = motor.motor_asyncio.AsyncIOMotorClient(
-    f'mongodb+srv://ali123:{"imali123"}@cluster0.xdccr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+    f'link to our mongodb database')
 
 db = client['apidb']
 token_collection = db['token']
