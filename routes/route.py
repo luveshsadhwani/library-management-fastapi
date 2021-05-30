@@ -48,3 +48,23 @@ async def post(authorname, booktitle, subject, publisher, isbn):
     return "Done"
 
 
+@router.post("/updateentry")
+async def update(index, authorname, booktitle, subject, publisher, isbn):
+    entry_data = {
+        "authorname": authorname,
+        "booktitle": booktitle,
+        "Subject": subject,
+        "Publisher": publisher,
+        "Isbn": isbn
+    }
+    x = await AuthDb.update_data(index, entry_data)
+    return "Done"
+
+
+@router.delete("/deleteentry")
+async def delete(entry_id: int):
+    data_dict = {
+        "id": entry_id
+    }
+    await AuthDb.delete(data_dict)
+    return "Done"
