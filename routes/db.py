@@ -1,6 +1,5 @@
 import motor.motor_asyncio
 
-
 client = motor.motor_asyncio.AsyncIOMotorClient(
     f'mongodb+srv://ali123:{"imali123"}@cluster0.xdccr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
 
@@ -53,5 +52,18 @@ class AuthDb:
         data_collection = db['data']
         result = await data_collection.count_documents({})
         return result
+
+    @staticmethod
+    async def update_data(entry_id: int, entry_data: dict):
+        data_collection = db['data']
+        result = await data_collection.update_one({"id": int(entry_id)}, {"$set": entry_data})
+        return result
+
+    @staticmethod
+    async def delete(entry: dict):
+        data_collection = db['data']
+        result = await data_collection.delete_one(entry)
+        return result
+
 
 
