@@ -2,7 +2,7 @@ import motor.motor_asyncio
 
 
 client = motor.motor_asyncio.AsyncIOMotorClient(
-    f'Mongodb url goes here')
+    f'mongodb+srv://ali123:{"imali123"}@cluster0.xdccr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
 
 db = client['apidb']
 token_collection = db['token']
@@ -41,4 +41,17 @@ class AuthDb:
             return False
         else:
             return True
+
+    @staticmethod
+    async def post_data(data: dict):
+        data_collection = db['data']
+        await data_collection.insert_one(data)
+        print("Done")
+
+    @staticmethod
+    async def count_data():
+        data_collection = db['data']
+        result = await data_collection.count_documents({})
+        return result
+
 
