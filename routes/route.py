@@ -1,6 +1,9 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from .db import AuthDb
+from fastapi.responses import JSONResponse
+
+
 
 # from fastapi.responses import UJSONResponse
 
@@ -61,7 +64,7 @@ async def update(index, authorname, booktitle, subject, publisher, isbn):
     return "Done"
 
 
-@router.delete("/deleteentry")
+@router.post("/deleteentry")
 async def delete(entry_id: int):
     data_dict = {
         "id": entry_id
@@ -70,10 +73,10 @@ async def delete(entry_id: int):
     return "Done"
 
 
-@router.get("/findone")
+@router.get("/find")
 async def find(entry_id: int):
     result = await AuthDb.find_one_entity(entry_id)
-    return result
+    return JSONResponse(content=result)
 
 """
 
