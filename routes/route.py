@@ -68,3 +68,15 @@ async def delete(entry_id: int):
     }
     await AuthDb.delete(data_dict)
     return "Done"
+
+
+@router.get("/findone")
+async def find(entry_id: int):
+    result = await AuthDb.find_one_entity(entry_id)
+    return result
+
+"""
+
+    Add another route for saving images in the end
+
+"""
