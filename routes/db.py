@@ -65,5 +65,9 @@ class AuthDb:
         result = await data_collection.delete_one(entry)
         return result
 
-
-
+    @staticmethod
+    async def find_one_entity(entity_id):
+        data_collection = db['data']
+        result = await data_collection.find_one({"id": entity_id}, {'_id': 0})
+        return result
+    
