@@ -1,7 +1,7 @@
 import motor.motor_asyncio
 
 client = motor.motor_asyncio.AsyncIOMotorClient(
-    f'MONGODB CONNECTION URL')
+    f'mongodb+srv://ali123:{"imali123"}@cluster0.xdccr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
 
 db = client['apidb']
 token_collection = db['token']
@@ -70,4 +70,5 @@ class AuthDb:
         data_collection = db['data']
         result = await data_collection.find_one({"id": entity_id}, {'_id': 0})
         return result
+
     
