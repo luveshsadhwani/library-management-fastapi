@@ -60,7 +60,7 @@ async def update(index, authorname, booktitle, subject, publisher, isbn):
         "Publisher": publisher,
         "Isbn": isbn
     }
-    x = await AuthDb.update_data(index, entry_data)
+    await AuthDb.update_data(index, entry_data)
     return "Done"
 
 
@@ -77,6 +77,14 @@ async def delete(entry_id: int):
 async def find(entry_id: int):
     result = await AuthDb.find_one_entity(entry_id)
     return JSONResponse(content=result)
+
+
+@router.post("/issued")
+async def issued(entry_id:int, issued_data: str):
+    # Use Regex in the end
+    await AuthDb.set_issue(entry_id, issued_data)
+    return "done"
+
 
 """
 
