@@ -37,7 +37,7 @@ async def read_item(username: str = None, password: str = None):
 
 
 @router.post("/entry")
-async def post(authorname, booktitle, subject, publisher, isbn):
+async def post(authorname, booktitle, subject, publisher, isbn, issued_data):
     index = await AuthDb.count_data()
     entry_data = {
         "id": int(index) + 1,
@@ -45,7 +45,8 @@ async def post(authorname, booktitle, subject, publisher, isbn):
         "booktitle": booktitle,
         "Subject": subject,
         "Publisher": publisher,
-        "Isbn": isbn
+        "Isbn": isbn,
+        "issued": issued_data
     }
     await AuthDb.post_data(entry_data)
     return "Done"
