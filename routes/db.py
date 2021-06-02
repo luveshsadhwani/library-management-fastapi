@@ -1,82 +1,78 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
-from .db import AuthDb
+import motor.motor_asyncio
 
-# from fastapi.responses import UJSONResponse
+client = motor.motor_asyncio.AsyncIOMotorClient(
+    f'mongodb+srv://ali123:{"imali123"}@cluster0.xdccr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
 
-
-router = APIRouter()
-
-
-class Data(BaseModel):
-    Authorization: str
+db = client['apidb']
+token_collection = db['token']
 
 
-@router.get("/")
-async def home():
-    await AuthDb.do_insert()
-    return "HELLO WORLD"
+class AuthDb:
 
+    @staticmethod
+    # test
+    async def do_insert():
+        data_collection = db['data']
+        document = {'token': 'aasfdgfahdsfsdf1q231'}
+        result = await data_collection.insert_one(document)
+        print('result %s' % repr(result.inserted_id))
 
-@router.get("/data")
-async def data():
-    info = await AuthDb.return_data()
-    return info
+    @staticmethod
+    async def return_data():
+        dat = []
+        data_collection = db['data']
+        results = data_collection.find({}, {'_id': 0})
+        for document in await results.to_list(length=100):
+            dat.append(document)
+        return dat
 
+    @staticmethod
+    async def check_token(token: str):
+        result = await token_collection.find_one({"token": token})
+        return result
 
-@router.get("/login")
-async def read_item(username: str = None, password: str = None):
-    if username is None and password is None:
-        return {False}
-    else:
-        info = await AuthDb.login_check(username, password)
-        return {info}
+    @staticmethod
+    async def login_check(username, password):
 
+        login_collection = db['login']
+        result = await login_collection.find_one({"username": username, "password": password})
+        if result is None:
+            return False
+        else:
+            return True
 
-@router.post("/entry")
-async def post(authorname, booktitle, subject, publisher, isbn):
-    index = await AuthDb.count_data()
-    entry_data = {
-        "id": int(index) + 1,
-        "authorname": authorname,
-        "booktitle": booktitle,
-        "Subject": subject,
-        "Publisher": publisher,
-        "Isbn": isbn
-    }
-    await AuthDb.post_data(entry_data)
-    return "Done"
+    @staticmethod
+    async def post_data(data: dict):
+        data_collection = db['data']
+        await data_collection.insert_one(data)
+        print("Done")
 
+    @staticmethod
+    async def count_data():
+        data_collection = db['data']
+        result = await data_collection.count_documents({})
+        return result
 
-@router.post("/updateentry")
-async def update(index, authorname, booktitle, subject, publisher, isbn):
-    entry_data = {
-        "authorname": authorname,
-        "booktitle": booktitle,
-        "Subject": subject,
-        "Publisher": publisher,
-        "Isbn": isbn
-    }
-    x = await AuthDb.update_data(index, entry_data)
-    return "Done"
+    @staticmethod
+    async def update_data(entry_id: int, entry_data: dict):
+        data_collection = db['data']
+        result = await data_collection.update_one({"id": int(entry_id)}, {"$set": entry_data})
+        return result
 
+    @staticmethod
+    async def delete(entry: dict):
+        data_collection = db['data']
+        result = await data_collection.delete_one(entry)
+        return result
 
-@router.post("/deleteentry")
-async def delete(entry_id: int):
-    data_dict = {
-        "id": entry_id
-    }
-    await AuthDb.delete(data_dict)
-    return "Done"
+    @staticmethod
+    async def find_one_entity(entity_id: int):
+        data_collection = db['data']
+        result = await data_collection.find_one({"id": entity_id}, {'_id': 0})
+        return result
 
-
-@router.get("/findone")
-async def find(entry_id: int):
-    result = await AuthDb.find_one_entity(entry_id)
-    return result
-
-"""
-
-    Add another route for saving images in the end
-
-"""
+    @staticmethod
+    async def set_issue(entry_id: int, issued):
+        data_collection = db['data']
+        result = await data_collection.update_one({"id": int(entry_id)}, {"$set": {'issued': issued}})
+        return result
