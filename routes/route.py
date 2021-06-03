@@ -81,11 +81,28 @@ async def find(entry_id: int):
 
 
 @router.post("/issued")
-async def issued(entry_id:int, issued_data: str):
+async def issued(entry_id: int):
     # Use Regex in the end
-    await AuthDb.set_issue(entry_id, issued_data)
+    entry_data = {
+        "issued": ""
+    }
+    await AuthDb.set_issue(entry_id, entry_data)
     return "done"
 
+
+@router.post("/updateissued")
+async def update_issue(entry_id: int, data_to_push: str):
+    entry_data = {
+        "issued": data_to_push
+    }
+    await AuthDb.set_issue(entry_id, entry_data)
+    return "done"
+
+
+@router.get("/getallissued")
+async def get_all_issued():
+    result = await AuthDb.get_all_issued()
+    return result
 
 """
 
