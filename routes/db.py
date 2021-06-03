@@ -72,7 +72,16 @@ class AuthDb:
         return result
 
     @staticmethod
-    async def set_issue(entry_id: int, issued):
+    async def set_issue(entry_id: int, entry_data):
         data_collection = db['data']
-        result = await data_collection.update_one({"id": int(entry_id)}, {"$set": {'issued': issued}})
+        result = await data_collection.update_one({"id": int(entry_id)}, {"$set": entry_data})
         return result
+
+    @staticmethod
+    async def get_all_issued():
+        dat = []
+        data_collection = db['data']
+        result = data_collection.find({"issued": {"$ne": ""}}, {"_id": 0})
+        for document in await result.to_list(length=100):
+            dat.append(document)
+        return dat
