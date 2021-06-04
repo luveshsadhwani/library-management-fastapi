@@ -2,8 +2,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from .db import AuthDb
 from fastapi.responses import JSONResponse
-
-
+from .indexgen import get_token
 
 # from fastapi.responses import UJSONResponse
 
@@ -17,7 +16,6 @@ class Data(BaseModel):
 
 @router.get("/")
 async def home():
-    await AuthDb.do_insert()
     return "HELLO WORLD"
 
 
@@ -38,7 +36,8 @@ async def read_item(username: str = None, password: str = None):
 
 @router.post("/entry")
 async def post(authorname, booktitle, subject, publisher, isbn, issued_data):
-    index = await AuthDb.count_data()
+    result = await AuthDb.get_last_inserted_item()
+    index = result[0]['id']
     entry_data = {
         "id": int(index) + 1,
         "authorname": authorname,
