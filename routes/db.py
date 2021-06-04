@@ -85,3 +85,12 @@ class AuthDb:
         for document in await result.to_list(length=100):
             dat.append(document)
         return dat
+
+    @staticmethod
+    async def get_last_inserted_item():
+        dat=[]
+        data_collection = db['data']
+        last_count = data_collection.find({}, {"_id": 0}).sort("id", -1)
+        for document in await last_count.to_list(length=100):
+            dat.append(document)
+        return dat
