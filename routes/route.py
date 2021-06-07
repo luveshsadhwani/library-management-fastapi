@@ -52,7 +52,7 @@ async def post(authorname, booktitle, subject, publisher, isbn, issued_data):
 
 
 @router.post("/updateentry")
-async def update(index, authorname, booktitle, subject, publisher, isbn):
+async def update(id, authorname, booktitle, subject, publisher, isbn):
     entry_data = {
         "authorname": authorname,
         "booktitle": booktitle,
@@ -60,7 +60,7 @@ async def update(index, authorname, booktitle, subject, publisher, isbn):
         "Publisher": publisher,
         "Isbn": isbn
     }
-    await AuthDb.update_data(index, entry_data)
+    await AuthDb.update_data(id, entry_data)
     return "Done"
 
 
