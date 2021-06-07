@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from .db import AuthDb
 from fastapi.responses import JSONResponse
-from .indexgen import get_token
+
 
 # from fastapi.responses import UJSONResponse
 
@@ -31,7 +31,7 @@ async def read_item(username: str = None, password: str = None):
         return {False}
     else:
         info = await AuthDb.login_check(username, password)
-        return {info}
+        return info
 
 
 @router.post("/entry")
@@ -103,8 +103,31 @@ async def get_all_issued():
     result = await AuthDb.get_all_issued()
     return result
 
-"""
 
+@router.get("/employee_info")
+async def employee_num(employee_id: str):
+    result = await AuthDb.single_employee_data(employee_id)
+    return result
+
+
+@router.post("/update_employee_info")
+async def update(employee_id: str, firstname, lastname, email, phone, designation):
+    entry_data = {
+        "firstname": firstname,
+        "lastname": lastname,
+        "email": email,
+        "phone": phone,
+        "designation": designation
+    }
+    await AuthDb.update_single_employee_data(employee_id, entry_data)
+    return "Done"
+
+
+"""
+    Add User
+    Update User
+    Delete User
+    Login using Data
     Add another route for saving images in the end
 
 """
