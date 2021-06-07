@@ -35,11 +35,11 @@ class AuthDb:
     async def login_check(username, password):
 
         login_collection = db['login']
-        result = await login_collection.find_one({"username": username, "password": password})
+        result = await login_collection.find_one({"username": username, "password": password}, {'_id': 0})
         if result is None:
             return False
         else:
-            return True
+            return result
 
     @staticmethod
     async def post_data(data: dict):
@@ -88,9 +88,21 @@ class AuthDb:
 
     @staticmethod
     async def get_last_inserted_item():
-        dat=[]
+        dat = []
         data_collection = db['data']
         last_count = data_collection.find({}, {"_id": 0}).sort("id", -1)
         for document in await last_count.to_list(length=100):
             dat.append(document)
         return dat
+
+    @staticmethod
+    async def single_employee_data(empid: str):
+        data_collection = db['users']
+        result = await data_collection.find_one({"empid": empid}, {'_id': 0})
+        return result
+
+    @staticmethod
+    async def update_single_employee_data(empid: str, entry_data: dict):
+        data_collection = db['users']
+        result = await data_collection.update_one({"empid": empid}, {"$set": entry_data})
+        return result
