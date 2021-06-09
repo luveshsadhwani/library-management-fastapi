@@ -106,3 +106,12 @@ class AuthDb:
         data_collection = db['users']
         result = await data_collection.update_one({"empid": empid}, {"$set": entry_data})
         return result
+
+    @staticmethod
+    async def check_deleted_employee(empid: str):
+        data_collection = db['users']
+        result = await data_collection.find_one({"empid": empid}, {'_id': 0})
+        if not result:
+            return False
+        else:
+            return True
