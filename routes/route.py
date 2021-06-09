@@ -105,13 +105,20 @@ async def get_all_issued():
 
 
 @router.get("/employee_info")
-async def employee_num(empid: str):
-    result = await AuthDb.single_employee_data(empid)
+async def employee_num(employee_id: str):
+    result = await AuthDb.single_employee_data(employee_id)
+    return result
+
+
+@router.get("/deleted_account")
+async def check_deleted_acc(employee_id: str):
+    result = await AuthDb.check_deleted_employee(employee_id)
+
     return result
 
 
 @router.post("/update_employee_info")
-async def update(empid: str, firstname, lastname, email, phone, designation):
+async def update(employee_id: str, firstname, lastname, email, phone, designation):
     entry_data = {
         "firstname": firstname,
         "lastname": lastname,
@@ -119,7 +126,7 @@ async def update(empid: str, firstname, lastname, email, phone, designation):
         "phone": phone,
         "designation": designation
     }
-    await AuthDb.update_single_employee_data(empid, entry_data)
+    await AuthDb.update_single_employee_data(employee_id, entry_data)
     return "Done"
 
 
