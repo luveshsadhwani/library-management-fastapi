@@ -115,3 +115,12 @@ class AuthDb:
             return False
         else:
             return True
+
+    @staticmethod
+    async def filtered_data(field, value):
+        dat = []
+        data_collection = db['data']
+        results = data_collection.find({field: value}, {'_id': 0})
+        for document in await results.to_list(length=100):
+            dat.append(document)
+        return dat
