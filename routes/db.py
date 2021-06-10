@@ -1,4 +1,5 @@
 import motor.motor_asyncio
+import re
 
 client = motor.motor_asyncio.AsyncIOMotorClient(
     f'mongodb+srv://ali123:{"imali123"}@cluster0.xdccr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
@@ -120,7 +121,8 @@ class AuthDb:
     async def filtered_data(field, value):
         dat = []
         data_collection = db['data']
-        results = data_collection.find({field: value}, {'_id': 0})
+        pat = re.compile(value, re.I)
+        results = data_collection.find({ field: {'$regex': pat}}, {'_id': 0})
         for document in await results.to_list(length=100):
             dat.append(document)
         return dat
@@ -133,3 +135,8 @@ class AuthDb:
         for document in await results.to_list(length=100):
             dat.append(document)
         return dat
+
+
+# { $text: { $search: "java coffee shop" } }
+
+# { <field>: { $elemMatch: { <query1>, <query2>, ... } } }
