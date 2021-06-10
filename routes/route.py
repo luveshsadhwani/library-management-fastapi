@@ -134,6 +134,13 @@ async def update(employee_id: str, firstname, lastname, email, phone, designatio
 async def filter_search(field: str, val: str):
     info = await AuthDb.filtered_data(field, val)
     return info
+
+
+@router.get("/filter_issued")
+async def filter_issued(field, val):
+    info = await AuthDb.filtered_data_issued(field, val)
+    return info
+
 """
     Add User
     Update User
