@@ -45,12 +45,15 @@ async def post(authorname, booktitle, subject, publisher, isbn, issued_data):
         "Subject": subject,
         "Publisher": publisher,
         "Isbn": isbn,
-        "issued": issued_data
+        "issued": issued_data,
+        "issued_date": "",
+        "return_date": ""
     }
     await AuthDb.post_data(entry_data)
     return "Done"
 
 
+# Test it out if fine don't change
 @router.post("/updateentry")
 async def update(id, authorname, booktitle, subject, publisher, isbn):
     entry_data = {
@@ -79,20 +82,26 @@ async def find(entry_id: int):
     return JSONResponse(content=result)
 
 
+# This needs changing
 @router.post("/issued")
 async def issued(entry_id: int):
     # Use Regex in the end
     entry_data = {
-        "issued": ""
+        "issued": "",
+        "issued_date": "",
+        "return_date": ""
     }
     await AuthDb.set_issue(entry_id, entry_data)
     return "done"
 
 
+# This needs changing
 @router.post("/updateissued")
-async def update_issue(entry_id: int, data_to_push: str):
+async def update_issue(entry_id: int, data_to_push: str, date_of_issue: str, return_date: str):
     entry_data = {
-        "issued": data_to_push
+        "issued": data_to_push,
+        "issued_date": date_of_issue,
+        "return_date": return_date
     }
     await AuthDb.set_issue(entry_id, entry_data)
     return "done"
